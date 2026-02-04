@@ -2,12 +2,20 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import GymSidebar from "./gym/GymSidebar";
 import GymHeader from "./gym/GymHeader";
+import AddMemberModal from "./gym/AddMemberModal";
 
 export default function Layout() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
 
     return (
         <div className="flex h-screen bg-[#F3F3F3] dark:bg-[#0A0A0A]">
+            {/* Add Member Modal - Global */}
+            <AddMemberModal
+                isOpen={isAddMemberModalOpen}
+                onClose={() => setIsAddMemberModalOpen(false)}
+            />
+
             {/* Mobile sidebar overlay */}
             {sidebarOpen && (
                 <div
@@ -29,7 +37,10 @@ export default function Layout() {
 
             {/* Main content area */}
             <div className="flex-1 flex flex-col min-w-0">
-                <GymHeader onMenuClick={() => setSidebarOpen(true)} />
+                <GymHeader
+                    onMenuClick={() => setSidebarOpen(true)}
+                    onAddMember={() => setIsAddMemberModalOpen(true)}
+                />
 
                 <div className="flex-1 overflow-y-auto">
                     <Outlet />

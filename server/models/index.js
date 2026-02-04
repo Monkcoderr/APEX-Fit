@@ -4,7 +4,7 @@ const memberSchema = new mongoose.Schema({
     name: { type: String, required: true },
     phone: { type: String, required: true, unique: true },
     notes: { type: String },
-    status: { type: String, enum: ['Active', 'Expired'], default: 'Active' },
+    status: { type: String, enum: ['Active', 'Inactive', 'Expired'], default: 'Active' },
     expiryDate: { type: Date },
     lastCheckIn: { type: Date },
     createdAt: { type: Date, default: Date.now }
@@ -38,10 +38,20 @@ const attendanceSchema = new mongoose.Schema({
     status: { type: String, enum: ['Present', 'Absent'], default: 'Present' }
 });
 
+const Member = mongoose.model('Member', memberSchema);
+const Plan = mongoose.model('Plan', planSchema);
+const Payment = mongoose.model('Payment', paymentSchema);
+const User = mongoose.model('User', userSchema);
+const Attendance = mongoose.model('Attendance', attendanceSchema);
+
+// Import Admin model separately to avoid circular dependency
+const Admin = require('./Admin');
+
 module.exports = {
-    Member: mongoose.model('Member', memberSchema),
-    Plan: mongoose.model('Plan', planSchema),
-    Payment: mongoose.model('Payment', paymentSchema),
-    User: mongoose.model('User', userSchema),
-    Attendance: mongoose.model('Attendance', attendanceSchema)
+    Member,
+    Plan,
+    Payment,
+    User,
+    Attendance,
+    Admin
 };

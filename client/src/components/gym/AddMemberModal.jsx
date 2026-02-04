@@ -51,9 +51,28 @@ export default function AddMemberModal({ isOpen, onClose }) {
         mutation.mutate(formData);
     };
 
-    return createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-white dark:bg-[#1E1E1E] rounded-xl w-full max-w-md shadow-2xl border border-[#E5E5E5] dark:border-[#333333] overflow-hidden">
+    const modalContent = (
+        <div
+            className="fixed inset-0 flex items-center justify-center p-4"
+            style={{
+                zIndex: 99999,
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0
+            }}
+            onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                    onClose();
+                }
+            }}
+        >
+            <div
+                className="bg-white dark:bg-[#1E1E1E] rounded-xl w-full max-w-md shadow-2xl border border-[#E5E5E5] dark:border-[#333333] overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+            >
                 <div className="flex items-center justify-between p-4 border-b border-[#E5E5E5] dark:border-[#333333]">
                     <h2 className="text-lg font-semibold text-[#111827] dark:text-white font-bricolage">
                         Add New Member
@@ -126,7 +145,8 @@ export default function AddMemberModal({ isOpen, onClose }) {
                     </div>
                 </form>
             </div>
-        </div>,
-        document.body
+        </div>
     );
+
+    return document.body ? createPortal(modalContent, document.body) : modalContent;
 }

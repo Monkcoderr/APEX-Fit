@@ -76,46 +76,72 @@ export default function GymSidebar({ onClose }) {
         <div className="space-y-2">
           {navigationItems.map((item) => {
             const Icon = item.icon;
-            const isActive = activeItem === item.name;
+            const isActive = location.pathname === item.route || activeItem === item.name;
             const isExpanded = expandedMenus[item.name];
 
             return (
               <div key={item.name}>
-                <button
-                  onClick={() =>
-                    handleItemClick(item.name, item.hasSubmenu, item.route)
-                  }
-                  className={`w-full flex items-center justify-between px-3 py-3 rounded-lg transition-all duration-200 ${isActive
-                    ? "bg-white dark:bg-[#262626] border border-[#E4E4E4] dark:border-[#404040] text-black dark:text-white shadow-sm"
-                    : "text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/10 active:bg-white/70 dark:active:bg-white/15 active:scale-[0.98]"
-                    }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <Icon
-                      size={20}
-                      className={
-                        isActive
-                          ? "text-[#2563EB] dark:text-[#10B981]"
-                          : "text-black/70 dark:text-white/70"
-                      }
-                    />
-                    <span
-                      className={`font-medium text-sm font-plus-jakarta ${isActive
-                        ? "text-black dark:text-white"
-                        : "text-black/70 dark:text-white/70"
-                        }`}
-                    >
-                      {item.name}
-                    </span>
-                  </div>
-                  {item.hasSubmenu && (
+                {item.hasSubmenu ? (
+                  <button
+                    onClick={() => handleItemClick(item.name, item.hasSubmenu)}
+                    className={`w-full flex items-center justify-between px-3 py-3 rounded-lg transition-all duration-200 ${isActive
+                        ? "bg-white dark:bg-[#262626] border border-[#E4E4E4] dark:border-[#404040] text-black dark:text-white shadow-sm"
+                        : "text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/10 active:bg-white/70 dark:active:bg-white/15 active:scale-[0.98]"
+                      }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon
+                        size={20}
+                        className={
+                          isActive
+                            ? "text-[#2563EB] dark:text-[#10B981]"
+                            : "text-black/70 dark:text-white/70"
+                        }
+                      />
+                      <span
+                        className={`font-medium text-sm font-plus-jakarta ${isActive
+                            ? "text-black dark:text-white"
+                            : "text-black/70 dark:text-white/70"
+                          }`}
+                      >
+                        {item.name}
+                      </span>
+                    </div>
                     <ChevronDown
                       size={16}
                       className={`transition-transform duration-200 ${isExpanded ? "rotate-180" : ""
                         } ${isActive ? "text-black dark:text-white" : "text-black/70 dark:text-white/70"}`}
                     />
-                  )}
-                </button>
+                  </button>
+                ) : (
+                  <Link
+                    to={item.route}
+                    onClick={() => handleItemClick(item.name, item.hasSubmenu)}
+                    className={`w-full flex items-center justify-between px-3 py-3 rounded-lg transition-all duration-200 ${location.pathname === item.route
+                        ? "bg-white dark:bg-[#262626] border border-[#E4E4E4] dark:border-[#404040] text-black dark:text-white shadow-sm"
+                        : "text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/10 active:bg-white/70 dark:active:bg-white/15 active:scale-[0.98]"
+                      }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon
+                        size={20}
+                        className={
+                          location.pathname === item.route
+                            ? "text-[#2563EB] dark:text-[#10B981]"
+                            : "text-black/70 dark:text-white/70"
+                        }
+                      />
+                      <span
+                        className={`font-medium text-sm font-plus-jakarta ${location.pathname === item.route
+                            ? "text-black dark:text-white"
+                            : "text-black/70 dark:text-white/70"
+                          }`}
+                      >
+                        {item.name}
+                      </span>
+                    </div>
+                  </Link>
+                )}
 
                 {/* Submenu items */}
                 {item.hasSubmenu && isExpanded && (

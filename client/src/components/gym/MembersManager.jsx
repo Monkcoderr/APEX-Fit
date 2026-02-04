@@ -35,10 +35,15 @@ export default function MembersManager() {
   console.log("🏋️ MembersManager: isAddModalOpen =", isAddModalOpen);
 
   // Fetch Members
-  const { data: members = [], isLoading } = useQuery({
+  const { data: members = [], isLoading, error } = useQuery({
     queryKey: ['members'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:5000/api/members');
+      const token = localStorage.getItem('token');
+      const res = await fetch('http://localhost:5000/api/members', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       if (!res.ok) throw new Error('Network response was not ok');
       return res.json();
     }
@@ -70,7 +75,8 @@ export default function MembersManager() {
       },
     };
 
-    const config = statusConfig[status];
+    const normalizedStatus = status?.toLowerCase() || 'active';
+    const config = statusConfig[normalizedStatus] || statusConfig.active;
     const Icon = config.icon;
 
     return (
@@ -78,7 +84,7 @@ export default function MembersManager() {
         className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${config.bg} ${config.text}`}
       >
         <Icon size={12} />
-        {status.charAt(0).toUpperCase() + status.slice(1)}
+        {status?.charAt(0).toUpperCase() + status?.slice(1).toLowerCase() || 'Active'}
       </div>
     );
   };
