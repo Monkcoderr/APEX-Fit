@@ -2,12 +2,9 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Save } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { API_BASE_URL } from "../../config";
 
 export default function AddMemberModal({ isOpen, onClose }) {
-    console.log("=== AddMemberModal Render ===");
-    console.log("isOpen:", isOpen);
-    console.log("onClose:", typeof onClose);
-
     const [formData, setFormData] = useState({
         name: "",
         phone: "",
@@ -18,9 +15,13 @@ export default function AddMemberModal({ isOpen, onClose }) {
 
     const mutation = useMutation({
         mutationFn: async (newMember) => {
-            const res = await fetch('http://localhost:5000/api/members', {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${API_BASE_URL}/members`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify(newMember),
             });
             if (!res.ok) {

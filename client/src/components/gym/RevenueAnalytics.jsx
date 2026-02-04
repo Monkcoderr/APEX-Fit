@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { API_BASE_URL } from '../../config';
 
 export default function RevenueAnalytics() {
     const [activeTab, setActiveTab] = useState('revenue');
@@ -10,7 +11,7 @@ export default function RevenueAnalytics() {
         queryKey: ['revenueAnalytics'],
         queryFn: async () => {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/dashboard/revenue-analytics', {
+            const res = await fetch(`${API_BASE_URL}/dashboard/revenue-analytics`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -73,8 +74,8 @@ export default function RevenueAnalytics() {
                     <button
                         onClick={() => setActiveTab('revenue')}
                         className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 ${activeTab === 'revenue'
-                                ? 'bg-white dark:bg-[#1E1E1E] text-[#2563EB] shadow-sm'
-                                : 'text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#374151] dark:hover:text-[#D1D5DB]'
+                            ? 'bg-white dark:bg-[#1E1E1E] text-[#2563EB] shadow-sm'
+                            : 'text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#374151] dark:hover:text-[#D1D5DB]'
                             }`}
                     >
                         Revenue
@@ -82,8 +83,8 @@ export default function RevenueAnalytics() {
                     <button
                         onClick={() => setActiveTab('members')}
                         className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 ${activeTab === 'members'
-                                ? 'bg-white dark:bg-[#1E1E1E] text-[#2563EB] shadow-sm'
-                                : 'text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#374151] dark:hover:text-[#D1D5DB]'
+                            ? 'bg-white dark:bg-[#1E1E1E] text-[#2563EB] shadow-sm'
+                            : 'text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#374151] dark:hover:text-[#D1D5DB]'
                             }`}
                     >
                         Members

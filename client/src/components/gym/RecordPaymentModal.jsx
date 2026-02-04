@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Save, CreditCard, IndianRupee } from "lucide-react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { API_BASE_URL } from "../../config";
 
 export default function RecordPaymentModal({ isOpen, onClose, member }) {
     const [formData, setFormData] = useState({
@@ -17,7 +18,12 @@ export default function RecordPaymentModal({ isOpen, onClose, member }) {
     const { data: plans = [] } = useQuery({
         queryKey: ['plans'],
         queryFn: async () => {
-            const res = await fetch('http://localhost:5000/api/plans');
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${API_BASE_URL}/plans`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             if (!res.ok) return []; // Fail silently or handle
             return res.json();
         },
@@ -26,9 +32,13 @@ export default function RecordPaymentModal({ isOpen, onClose, member }) {
 
     const mutation = useMutation({
         mutationFn: async (paymentData) => {
-            const res = await fetch('http://localhost:5000/api/payment', {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${API_BASE_URL}/payment`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify({
                     ...paymentData,
                     memberId: member._id

@@ -15,6 +15,7 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import RevenueAnalytics from "./RevenueAnalytics";
+import { API_BASE_URL } from "../../config";
 
 export default function GymDashboard() {
   const [selectedPeriod, setSelectedPeriod] = useState("This Month");
@@ -25,7 +26,7 @@ export default function GymDashboard() {
     queryKey: ['dashboardStats'],
     queryFn: async () => {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5000/api/dashboard/stats', {
+      const res = await fetch(`${API_BASE_URL}/dashboard/stats`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

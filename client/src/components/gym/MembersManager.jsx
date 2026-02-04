@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { API_BASE_URL } from "../../config";
 import AddMemberModal from "./AddMemberModal";
 import RecordPaymentModal from "./RecordPaymentModal";
 import {
@@ -22,8 +23,6 @@ import {
 } from "lucide-react";
 
 export default function MembersManager() {
-  console.log("🏋️ MembersManager: Component function called");
-
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -31,15 +30,12 @@ export default function MembersManager() {
   const [viewMode, setViewMode] = useState("grid"); // grid or table
   const [selectedMember, setSelectedMember] = useState(null);
 
-  console.log("🏋️ MembersManager: State initialized");
-  console.log("🏋️ MembersManager: isAddModalOpen =", isAddModalOpen);
-
   // Fetch Members
   const { data: members = [], isLoading, error } = useQuery({
     queryKey: ['members'],
     queryFn: async () => {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5000/api/members', {
+      const res = await fetch(`${API_BASE_URL}/members`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

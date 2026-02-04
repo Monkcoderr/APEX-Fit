@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Search, CheckCircle, XCircle, Clock, User, AlertTriangle } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { API_BASE_URL } from "../../config";
 
 export default function CheckInPage() {
     const [search, setSearch] = useState("");
@@ -15,7 +16,7 @@ export default function CheckInPage() {
     const checkInMutation = useMutation({
         mutationFn: async (phone) => {
             // Mock API call to check-in by phone
-            const res = await fetch('http://localhost:5000/api/attendance/checkin', {
+            const res = await fetch(`${API_BASE_URL}/attendance/checkin`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ phone })
@@ -44,7 +45,7 @@ export default function CheckInPage() {
         if (!search.trim()) return;
 
         try {
-            const res = await fetch('http://localhost:5000/api/attendance/checkin', {
+            const res = await fetch(`${API_BASE_URL}/attendance/checkin`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ phone: search })
@@ -95,8 +96,8 @@ export default function CheckInPage() {
             {lastCheckIn && (
                 <div className={`transform transition-all duration-300 ${lastCheckIn.success ? 'scale-100 opacity-100' : 'scale-100 opacity-100'}`}>
                     <div className={`rounded-2xl p-8 border-2 text-center space-y-4 shadow-xl ${lastCheckIn.success
-                            ? "bg-green-50 dark:bg-green-900/10 border-green-500"
-                            : "bg-red-50 dark:bg-red-900/10 border-red-500"
+                        ? "bg-green-50 dark:bg-green-900/10 border-green-500"
+                        : "bg-red-50 dark:bg-red-900/10 border-red-500"
                         }`}>
                         <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center ${lastCheckIn.success ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"
                             }`}>
@@ -125,8 +126,8 @@ export default function CheckInPage() {
                                         </h3>
                                         <div className="flex items-center gap-2 text-sm">
                                             <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${lastCheckIn.member.status === 'Active'
-                                                    ? "bg-green-100 text-green-700"
-                                                    : "bg-red-100 text-red-700"
+                                                ? "bg-green-100 text-green-700"
+                                                : "bg-red-100 text-red-700"
                                                 }`}>
                                                 {lastCheckIn.member.status}
                                             </span>
