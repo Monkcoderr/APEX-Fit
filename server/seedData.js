@@ -129,65 +129,124 @@ const seedData = async () => {
         ]);
         console.log(`✅ Created ${members.length} members`);
 
-        // Create Payments for some members
+        // Create Payments for members with historical data for analytics
         const payments = [];
         
-        // Rahul - Monthly plan
-        payments.push({
-            memberId: members[0]._id,
-            amount: 1500,
-            plan: 'Monthly',
-            method: 'Card',
-            date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000)
-        });
+        // Helper function to generate random date in a given month offset
+        const getRandomDateInMonth = (monthsAgo) => {
+            const date = new Date();
+            date.setMonth(date.getMonth() - monthsAgo);
+            const randomDay = Math.floor(Math.random() * 28) + 1; // Safe day range
+            date.setDate(randomDay);
+            return date;
+        };
 
-        // Priya - Quarterly plan
-        payments.push({
-            memberId: members[1]._id,
-            amount: 4000,
-            plan: 'Quarterly',
-            method: 'Online',
-            date: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000)
-        });
+        // Generate payments for the last 6 months for revenue analytics
+        const paymentMethods = ['Cash', 'Card', 'Online'];
+        const planTypes = ['Monthly', 'Quarterly', 'Half Yearly', 'Yearly'];
+        const planPrices = {
+            'Monthly': 1500,
+            'Quarterly': 4000,
+            'Half Yearly': 7500,
+            'Yearly': 14000
+        };
 
-        // Amit - Monthly plan
-        payments.push({
-            memberId: members[2]._id,
-            amount: 1500,
-            plan: 'Monthly',
-            method: 'Cash',
-            date: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000)
-        });
+        // Current month payments (15-20 payments)
+        for (let i = 0; i < 18; i++) {
+            const randomMember = members[Math.floor(Math.random() * members.length)];
+            const randomPlan = planTypes[Math.floor(Math.random() * planTypes.length)];
+            const randomMethod = paymentMethods[Math.floor(Math.random() * paymentMethods.length)];
+            
+            payments.push({
+                memberId: randomMember._id,
+                amount: planPrices[randomPlan],
+                plan: randomPlan,
+                method: randomMethod,
+                date: getRandomDateInMonth(0)
+            });
+        }
 
-        // Vikram - Half Yearly plan
-        payments.push({
-            memberId: members[4]._id,
-            amount: 7500,
-            plan: 'Half Yearly',
-            method: 'Card',
-            date: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000)
-        });
+        // Last month payments (12-15 payments)
+        for (let i = 0; i < 14; i++) {
+            const randomMember = members[Math.floor(Math.random() * members.length)];
+            const randomPlan = planTypes[Math.floor(Math.random() * planTypes.length)];
+            const randomMethod = paymentMethods[Math.floor(Math.random() * paymentMethods.length)];
+            
+            payments.push({
+                memberId: randomMember._id,
+                amount: planPrices[randomPlan],
+                plan: randomPlan,
+                method: randomMethod,
+                date: getRandomDateInMonth(1)
+            });
+        }
 
-        // Anjali - Quarterly plan
-        payments.push({
-            memberId: members[5]._id,
-            amount: 4000,
-            plan: 'Quarterly',
-            method: 'Online',
-            date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-        });
+        // 2 months ago (10-12 payments)
+        for (let i = 0; i < 11; i++) {
+            const randomMember = members[Math.floor(Math.random() * members.length)];
+            const randomPlan = planTypes[Math.floor(Math.random() * planTypes.length)];
+            const randomMethod = paymentMethods[Math.floor(Math.random() * paymentMethods.length)];
+            
+            payments.push({
+                memberId: randomMember._id,
+                amount: planPrices[randomPlan],
+                plan: randomPlan,
+                method: randomMethod,
+                date: getRandomDateInMonth(2)
+            });
+        }
 
-        // Arjun - Quarterly plan
-        payments.push({
-            memberId: members[8]._id,
-            amount: 4000,
-            plan: 'Quarterly',
-            method: 'Cash',
-            date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
-        });
+        // 3 months ago (8-10 payments)
+        for (let i = 0; i < 9; i++) {
+            const randomMember = members[Math.floor(Math.random() * members.length)];
+            const randomPlan = planTypes[Math.floor(Math.random() * planTypes.length)];
+            const randomMethod = paymentMethods[Math.floor(Math.random() * paymentMethods.length)];
+            
+            payments.push({
+                memberId: randomMember._id,
+                amount: planPrices[randomPlan],
+                plan: randomPlan,
+                method: randomMethod,
+                date: getRandomDateInMonth(3)
+            });
+        }
+
+        // 4 months ago (7-9 payments)
+        for (let i = 0; i < 8; i++) {
+            const randomMember = members[Math.floor(Math.random() * members.length)];
+            const randomPlan = planTypes[Math.floor(Math.random() * planTypes.length)];
+            const randomMethod = paymentMethods[Math.floor(Math.random() * paymentMethods.length)];
+            
+            payments.push({
+                memberId: randomMember._id,
+                amount: planPrices[randomPlan],
+                plan: randomPlan,
+                method: randomMethod,
+                date: getRandomDateInMonth(4)
+            });
+        }
+
+        // 5 months ago (6-8 payments)
+        for (let i = 0; i < 7; i++) {
+            const randomMember = members[Math.floor(Math.random() * members.length)];
+            const randomPlan = planTypes[Math.floor(Math.random() * planTypes.length)];
+            const randomMethod = paymentMethods[Math.floor(Math.random() * paymentMethods.length)];
+            
+            payments.push({
+                memberId: randomMember._id,
+                amount: planPrices[randomPlan],
+                plan: randomPlan,
+                method: randomMethod,
+                date: getRandomDateInMonth(5)
+            });
+        }
 
         await Payment.insertMany(payments);
-        console.log(`✅ Created ${payments.length} payments`);
+        console.log(`✅ Created ${payments.length} payments across 6 months`);
+
+        // Calculate total revenue
+        const totalRevenue = payments.reduce((sum, payment) => sum + payment.amount, 0);
+        console.log(`💰 Total Revenue: ₹${totalRevenue.toLocaleString('en-IN')}`);
 
         // Create default admin if not exists
         const existingAdmin = await Admin.findOne({ email: 'admin@apexfit.com' });
