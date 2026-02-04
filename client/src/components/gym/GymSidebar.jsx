@@ -58,17 +58,7 @@ export default function GymSidebar({ onClose }) {
     <div className="w-60 bg-[#F3F3F3] dark:bg-[#1A1A1A] flex-shrink-0 flex flex-col h-full">
       {/* Brand Logo */}
       <div className="p-4 flex items-center gap-3">
-        <div className="w-12 h-12 bg-gradient-to-br from-[#2563EB] to-[#10B981] rounded-xl flex items-center justify-center">
-          <Dumbbell size={24} className="text-white" />
-        </div>
-        <div className="flex flex-col">
-          <h1 className="text-lg font-bold text-[#2B2B2B] dark:text-white font-bricolage">
-            FitFlow Pro
-          </h1>
-          <span className="text-xs text-[#7F7F7F] dark:text-[#AAAAAA] font-inter">
-            Gym Management
-          </span>
-        </div>
+        <img src="/logo.png" alt="ApexFit Logo" className="h-10 w-auto object-contain" />
       </div>
 
       {/* Navigation Menu */}
@@ -85,8 +75,8 @@ export default function GymSidebar({ onClose }) {
                   <button
                     onClick={() => handleItemClick(item.name, item.hasSubmenu)}
                     className={`w-full flex items-center justify-between px-3 py-3 rounded-lg transition-all duration-200 ${isActive
-                        ? "bg-white dark:bg-[#262626] border border-[#E4E4E4] dark:border-[#404040] text-black dark:text-white shadow-sm"
-                        : "text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/10 active:bg-white/70 dark:active:bg-white/15 active:scale-[0.98]"
+                      ? "bg-white dark:bg-[#262626] border border-[#E4E4E4] dark:border-[#404040] text-black dark:text-white shadow-sm"
+                      : "text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/10 active:bg-white/70 dark:active:bg-white/15 active:scale-[0.98]"
                       }`}
                   >
                     <div className="flex items-center gap-3">
@@ -100,8 +90,8 @@ export default function GymSidebar({ onClose }) {
                       />
                       <span
                         className={`font-medium text-sm font-plus-jakarta ${isActive
-                            ? "text-black dark:text-white"
-                            : "text-black/70 dark:text-white/70"
+                          ? "text-black dark:text-white"
+                          : "text-black/70 dark:text-white/70"
                           }`}
                       >
                         {item.name}
@@ -118,8 +108,8 @@ export default function GymSidebar({ onClose }) {
                     to={item.route}
                     onClick={() => handleItemClick(item.name, item.hasSubmenu)}
                     className={`w-full flex items-center justify-between px-3 py-3 rounded-lg transition-all duration-200 ${location.pathname === item.route
-                        ? "bg-white dark:bg-[#262626] border border-[#E4E4E4] dark:border-[#404040] text-black dark:text-white shadow-sm"
-                        : "text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/10 active:bg-white/70 dark:active:bg-white/15 active:scale-[0.98]"
+                      ? "bg-white dark:bg-[#262626] border border-[#E4E4E4] dark:border-[#404040] text-black dark:text-white shadow-sm"
+                      : "text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/10 active:bg-white/70 dark:active:bg-white/15 active:scale-[0.98]"
                       }`}
                   >
                     <div className="flex items-center gap-3">
@@ -133,8 +123,8 @@ export default function GymSidebar({ onClose }) {
                       />
                       <span
                         className={`font-medium text-sm font-plus-jakarta ${location.pathname === item.route
-                            ? "text-black dark:text-white"
-                            : "text-black/70 dark:text-white/70"
+                          ? "text-black dark:text-white"
+                          : "text-black/70 dark:text-white/70"
                           }`}
                       >
                         {item.name}
@@ -190,7 +180,7 @@ export default function GymSidebar({ onClose }) {
             </span>
           </div>
           <div className="space-y-1">
-            <div className="text-2xl font-bold font-sora">$12,847</div>
+            <div className="text-2xl font-bold font-sora">₹12,847</div>
             <div className="text-xs opacity-90 font-inter">
               +23% from last month
             </div>
