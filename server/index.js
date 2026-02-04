@@ -11,7 +11,10 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
-app.use(cors({ origin: "*" }));
+app.use(cors({
+    origin: "https://apex-fit-lac.vercel.app", // Removed the "/" at the end
+    credentials: true
+}));
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/fitflow_pro')
