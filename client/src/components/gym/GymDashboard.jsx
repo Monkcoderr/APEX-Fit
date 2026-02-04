@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   TrendingUp,
   TrendingDown,
@@ -19,13 +20,28 @@ export default function GymDashboard() {
   const [hoveredKPI, setHoveredKPI] = useState(null);
   const [selectedChart, setSelectedChart] = useState("revenue");
 
-  // KPI Data
+  // Fetch Stats
+  const { data: stats, isLoading } = useQuery({
+    queryKey: ['dashboardStats'],
+    queryFn: async () => {
+      const res = await fetch('http://localhost:5000/api/dashboard/stats');
+      if (!res.ok) throw new Error('Network response was not ok');
+      return res.json();
+    }
+  });
+
+  const revenue = stats?.revenue || 0;
+  const activeMembers = stats?.activeMembers || 0;
+  const expiredMembers = stats?.expiredMembers || 0;
+  const todayCheckIns = stats?.todayCheckIns || 0;
+
+  // KPI Data (Dynamic)
   const kpiData = [
     {
       id: "revenue",
       title: "Total Revenue",
-      value: "₹3,45,230",
-      change: "+12.5%",
+      value: `₹${revenue.toLocaleString()}`, // Using Indian Locale
+      change: "+12.5%", // Mock change for now
       trend: "up",
       icon: IndianRupee,
       color: "from-[#2563EB] to-[#1D4ED8]",
@@ -35,7 +51,7 @@ export default function GymDashboard() {
     {
       id: "members",
       title: "Active Members",
-      value: "1,847",
+      value: activeMembers.toString(),
       change: "+8.2%",
       trend: "up",
       icon: Users,
@@ -44,9 +60,9 @@ export default function GymDashboard() {
         "bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-800/20",
     },
     {
-      id: "retention",
-      title: "Retention Rate",
-      value: "87.3%",
+      id: "expired",
+      title: "Expired Members", // Replaced Retention Rate with Expired Members as per user request (or similar useful metric)
+      value: expiredMembers.toString(),
       change: "-2.1%",
       trend: "down",
       icon: Target,
@@ -56,8 +72,8 @@ export default function GymDashboard() {
     },
     {
       id: "checkins",
-      title: "Daily Check-ins",
-      value: "234",
+      title: "Today's Check-ins",
+      value: todayCheckIns.toString(),
       change: "+15.3%",
       trend: "up",
       icon: Activity,
@@ -66,6 +82,8 @@ export default function GymDashboard() {
         "bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20",
     },
   ];
+
+  if (isLoading) return <div className="p-8 text-center">Loading Dashboard...</div>;
 
   // Chart data for revenue
   const chartData = [
@@ -206,8 +224,8 @@ export default function GymDashboard() {
                   </span>
                   <div
                     className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold font-inter ${kpi.trend === "up"
-                        ? "bg-[#DCFCE7] dark:bg-green-900/30 text-[#16A34A] dark:text-green-400"
-                        : "bg-[#FEF2F2] dark:bg-red-900/30 text-[#DC2626] dark:text-red-400"
+                      ? "bg-[#DCFCE7] dark:bg-green-900/30 text-[#16A34A] dark:text-green-400"
+                      : "bg-[#FEF2F2] dark:bg-red-900/30 text-[#DC2626] dark:text-red-400"
                       }`}
                   >
                     {kpi.trend === "up" ? (
@@ -245,8 +263,8 @@ export default function GymDashboard() {
             <div className="flex items-center gap-2">
               <button
                 className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors duration-200 ${selectedChart === "revenue"
-                    ? "bg-[#2563EB] text-white"
-                    : "bg-[#F3F4F6] dark:bg-[#374151] text-[#6B7280] dark:text-[#9CA3AF] hover:bg-[#E5E7EB] dark:hover:bg-[#4B5563]"
+                  ? "bg-[#2563EB] text-white"
+                  : "bg-[#F3F4F6] dark:bg-[#374151] text-[#6B7280] dark:text-[#9CA3AF] hover:bg-[#E5E7EB] dark:hover:bg-[#4B5563]"
                   }`}
                 onClick={() => setSelectedChart("revenue")}
               >
@@ -254,8 +272,8 @@ export default function GymDashboard() {
               </button>
               <button
                 className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors duration-200 ${selectedChart === "members"
-                    ? "bg-[#2563EB] text-white"
-                    : "bg-[#F3F4F6] dark:bg-[#374151] text-[#6B7280] dark:text-[#9CA3AF] hover:bg-[#E5E7EB] dark:hover:bg-[#4B5563]"
+                  ? "bg-[#2563EB] text-white"
+                  : "bg-[#F3F4F6] dark:bg-[#374151] text-[#6B7280] dark:text-[#9CA3AF] hover:bg-[#E5E7EB] dark:hover:bg-[#4B5563]"
                   }`}
                 onClick={() => setSelectedChart("members")}
               >
@@ -354,56 +372,111 @@ export default function GymDashboard() {
         </div>
       </div>
 
-      {/* Recent Activities */}
-      <div className="bg-white dark:bg-[#1E1E1E] rounded-xl border border-[#E5E5E5] dark:border-[#333333] p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h3 className="text-lg font-semibold text-[#111827] dark:text-white font-bricolage">
-              Recent Activities
-            </h3>
-            <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] font-inter">
-              Latest member and trainer activities
-            </p>
+      {/* Expiring Soon & Recent Activities Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Expiring Members */}
+        <div className="bg-white dark:bg-[#1E1E1E] rounded-xl border border-[#E5E5E5] dark:border-[#333333] p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-semibold text-[#111827] dark:text-white font-bricolage">
+                Expiring Soon (7 Days)
+              </h3>
+              <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] font-inter">
+                {stats?.expiringSoon?.length || 0} members expiring
+              </p>
+            </div>
+            <button className="text-sm font-medium text-[#2563EB] hover:text-[#1D4ED8] transition-colors duration-200 font-inter">
+              View All
+            </button>
           </div>
-          <button className="text-sm font-medium text-[#2563EB] hover:text-[#1D4ED8] transition-colors duration-200 font-inter">
-            View All
-          </button>
+
+          <div className="space-y-4">
+            {stats?.expiringSoon?.length > 0 ? (
+              stats.expiringSoon.map((member, index) => (
+                <div
+                  key={member._id || index}
+                  className="flex items-center gap-4 p-3 rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-[#374151] transition-colors duration-200"
+                >
+                  <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold">
+                    {member.name.charAt(0)}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-[#111827] dark:text-white font-inter text-sm">
+                        {member.name}
+                      </span>
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 font-inter">
+                        {member.plan || 'Plan'}
+                      </span>
+                    </div>
+                    <span className="text-xs text-[#DC2626] font-inter">
+                      Expires: {new Date(member.expiryDate).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <button className="px-3 py-1 text-xs font-medium text-white bg-[#2563EB] rounded-lg hover:bg-[#1D4ED8]">
+                    Renew
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                No members expiring soon
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="space-y-4">
-          {activities.map((activity, index) => (
-            <div
-              key={activity.id}
-              className="flex items-center gap-4 p-3 rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-[#374151] transition-colors duration-200"
-            >
-              <img
-                src={activity.avatar}
-                alt={activity.user}
-                className="w-10 h-10 rounded-full object-cover"
-              />
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium text-[#111827] dark:text-white font-inter text-sm">
-                    {activity.user}
-                  </span>
-                  <span className="text-sm text-[#6B7280] dark:text-[#9CA3AF] font-inter">
-                    {activity.action}
+        {/* Recent Activities */}
+        <div className="bg-white dark:bg-[#1E1E1E] rounded-xl border border-[#E5E5E5] dark:border-[#333333] p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-semibold text-[#111827] dark:text-white font-bricolage">
+                Recent Activities
+              </h3>
+              <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] font-inter">
+                Latest member and trainer activities
+              </p>
+            </div>
+            <button className="text-sm font-medium text-[#2563EB] hover:text-[#1D4ED8] transition-colors duration-200 font-inter">
+              View All
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            {activities.map((activity, index) => (
+              <div
+                key={activity.id}
+                className="flex items-center gap-4 p-3 rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-[#374151] transition-colors duration-200"
+              >
+                <img
+                  src={activity.avatar}
+                  alt={activity.user}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-[#111827] dark:text-white font-inter text-sm">
+                      {activity.user}
+                    </span>
+                    <span className="text-sm text-[#6B7280] dark:text-[#9CA3AF] font-inter">
+                      {activity.action}
+                    </span>
+                  </div>
+                  <span className="text-xs text-[#9CA3AF] dark:text-[#6B7280] font-inter">
+                    {activity.time}
                   </span>
                 </div>
-                <span className="text-xs text-[#9CA3AF] dark:text-[#6B7280] font-inter">
-                  {activity.time}
-                </span>
-              </div>
-              <div
-                className={`w-2 h-2 rounded-full ${activity.type === "member_joined"
+                <div
+                  className={`w-2 h-2 rounded-full ${activity.type === "member_joined"
                     ? "bg-[#10B981]"
                     : activity.type === "payment"
                       ? "bg-[#2563EB]"
                       : "bg-[#F59E0B]"
-                  }`}
-              />
-            </div>
-          ))}
+                    }`}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

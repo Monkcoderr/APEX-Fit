@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -14,6 +15,7 @@ import {
 } from "lucide-react";
 
 export default function GymSidebar({ onClose }) {
+  const location = useLocation();
   const [activeItem, setActiveItem] = useState("Dashboard");
   const [expandedMenus, setExpandedMenus] = useState({});
 
@@ -24,13 +26,10 @@ export default function GymSidebar({ onClose }) {
     }));
   };
 
-  const handleItemClick = (itemName, hasSubmenu, route) => {
+  const handleItemClick = (itemName, hasSubmenu) => {
     setActiveItem(itemName);
     if (hasSubmenu) {
       toggleSubmenu(itemName);
-    } else if (route && typeof window !== "undefined") {
-      // Simple navigation using window.location
-      window.location.href = route;
     }
     // Close sidebar on mobile when item is clicked
     if (onClose && typeof window !== "undefined" && window.innerWidth < 1024) {
@@ -39,7 +38,7 @@ export default function GymSidebar({ onClose }) {
   };
 
   const navigationItems = [
-    { name: "Dashboard", icon: LayoutDashboard, hasSubmenu: false, route: "/" },
+    { name: "Dashboard", icon: LayoutDashboard, hasSubmenu: false, route: "/dashboard" },
     { name: "Members", icon: Users, hasSubmenu: true, route: "/members" },
     {
       name: "Trainers",
@@ -48,11 +47,11 @@ export default function GymSidebar({ onClose }) {
       route: "/trainers",
     },
     { name: "Workouts", icon: Dumbbell, hasSubmenu: false, route: "/workouts" },
-    { name: "Schedule", icon: Calendar, hasSubmenu: false },
-    { name: "Payments", icon: CreditCard, hasSubmenu: true },
-    { name: "Analytics", icon: BarChart3, hasSubmenu: false },
-    { name: "Messages", icon: MessageCircle, hasSubmenu: false },
-    { name: "Settings", icon: Settings, hasSubmenu: false },
+    { name: "Schedule", icon: Calendar, hasSubmenu: false, route: "/schedule" },
+    { name: "Payments", icon: CreditCard, hasSubmenu: true, route: "/payments" },
+    { name: "Analytics", icon: BarChart3, hasSubmenu: false, route: "/analytics" },
+    { name: "Messages", icon: MessageCircle, hasSubmenu: false, route: "/messages" },
+    { name: "Settings", icon: Settings, hasSubmenu: false, route: "/settings" },
   ];
 
   return (
@@ -86,11 +85,10 @@ export default function GymSidebar({ onClose }) {
                   onClick={() =>
                     handleItemClick(item.name, item.hasSubmenu, item.route)
                   }
-                  className={`w-full flex items-center justify-between px-3 py-3 rounded-lg transition-all duration-200 ${
-                    isActive
-                      ? "bg-white dark:bg-[#262626] border border-[#E4E4E4] dark:border-[#404040] text-black dark:text-white shadow-sm"
-                      : "text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/10 active:bg-white/70 dark:active:bg-white/15 active:scale-[0.98]"
-                  }`}
+                  className={`w-full flex items-center justify-between px-3 py-3 rounded-lg transition-all duration-200 ${isActive
+                    ? "bg-white dark:bg-[#262626] border border-[#E4E4E4] dark:border-[#404040] text-black dark:text-white shadow-sm"
+                    : "text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/10 active:bg-white/70 dark:active:bg-white/15 active:scale-[0.98]"
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <Icon
@@ -102,11 +100,10 @@ export default function GymSidebar({ onClose }) {
                       }
                     />
                     <span
-                      className={`font-medium text-sm font-plus-jakarta ${
-                        isActive
-                          ? "text-black dark:text-white"
-                          : "text-black/70 dark:text-white/70"
-                      }`}
+                      className={`font-medium text-sm font-plus-jakarta ${isActive
+                        ? "text-black dark:text-white"
+                        : "text-black/70 dark:text-white/70"
+                        }`}
                     >
                       {item.name}
                     </span>
@@ -114,9 +111,8 @@ export default function GymSidebar({ onClose }) {
                   {item.hasSubmenu && (
                     <ChevronDown
                       size={16}
-                      className={`transition-transform duration-200 ${
-                        isExpanded ? "rotate-180" : ""
-                      } ${isActive ? "text-black dark:text-white" : "text-black/70 dark:text-white/70"}`}
+                      className={`transition-transform duration-200 ${isExpanded ? "rotate-180" : ""
+                        } ${isActive ? "text-black dark:text-white" : "text-black/70 dark:text-white/70"}`}
                     />
                   )}
                 </button>
@@ -126,22 +122,22 @@ export default function GymSidebar({ onClose }) {
                   <div className="ml-8 mt-2 space-y-1">
                     {item.name === "Members" && (
                       <>
-                        <button className="w-full text-left px-3 py-2 text-sm text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors duration-200 font-inter">
+                        <Link to="/members" className="block w-full text-left px-3 py-2 text-sm text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors duration-200 font-inter">
                           All Members
-                        </button>
-                        <button className="w-full text-left px-3 py-2 text-sm text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors duration-200 font-inter">
+                        </Link>
+                        <Link to="/plans" className="block w-full text-left px-3 py-2 text-sm text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors duration-200 font-inter">
                           Membership Plans
-                        </button>
-                        <button className="w-full text-left px-3 py-2 text-sm text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors duration-200 font-inter">
+                        </Link>
+                        <Link to="/checkin" className="block w-full text-left px-3 py-2 text-sm text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors duration-200 font-inter">
                           Check-ins
-                        </button>
+                        </Link>
                       </>
                     )}
                     {item.name === "Payments" && (
                       <>
-                        <button className="w-full text-left px-3 py-2 text-sm text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors duration-200 font-inter">
+                        <Link to="/payments" className="block w-full text-left px-3 py-2 text-sm text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors duration-200 font-inter">
                           Transactions
-                        </button>
+                        </Link>
                         <button className="w-full text-left px-3 py-2 text-sm text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors duration-200 font-inter">
                           Invoices
                         </button>

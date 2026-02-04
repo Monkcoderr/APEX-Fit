@@ -1,5 +1,3 @@
-import StubPage from "../components/StubPage";
+import CheckInPage from "../components/gym/CheckInPage";
 
-export default function CheckInPage() {
-    return <StubPage title="Check In" />;
-}
+export default CheckInPage;

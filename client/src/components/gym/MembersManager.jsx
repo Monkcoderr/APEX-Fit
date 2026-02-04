@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import AddMemberModal from "./AddMemberModal";
+import RecordPaymentModal from "./RecordPaymentModal";
 import {
   Search,
   Filter,
@@ -19,89 +22,34 @@ import {
 } from "lucide-react";
 
 export default function MembersManager() {
+  console.log("🏋️ MembersManager: Component function called");
+
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [viewMode, setViewMode] = useState("grid"); // grid or table
   const [selectedMember, setSelectedMember] = useState(null);
 
-  // Sample members data
-  const membersData = [
-    {
-      id: 1,
-      name: "Priya Sharma",
-      email: "priya.s@email.com",
-      phone: "+91 98765 43210",
-      plan: "Premium",
-      status: "active",
-      joinDate: "2024-01-15",
-      lastVisit: "2024-11-24",
-      avatar:
-        "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&dpr=2",
-      trainer: "Vikram Singh",
-      membershipExpiry: "2024-12-15",
-      checkins: 47,
-    },
-    {
-      id: 2,
-      name: "Rahul Verma",
-      email: "rahul.v@email.com",
-      phone: "+91 98123 45678",
-      plan: "Basic",
-      status: "active",
-      joinDate: "2024-02-20",
-      lastVisit: "2024-11-23",
-      avatar:
-        "https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&dpr=2",
-      trainer: "Amit Patel",
-      membershipExpiry: "2024-12-20",
-      checkins: 32,
-    },
-    {
-      id: 3,
-      name: "Anjali Singh",
-      email: "anjali.s@email.com",
-      phone: "+91 99887 76655",
-      plan: "Premium",
-      status: "active",
-      joinDate: "2024-03-10",
-      lastVisit: "2024-11-25",
-      avatar:
-        "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&dpr=2",
-      trainer: "Deepa Reddy",
-      membershipExpiry: "2025-03-10",
-      checkins: 55,
-    },
-    {
-      id: 4,
-      name: "Arjun Kumar",
-      email: "arjun.k@email.com",
-      phone: "+91 91234 56789",
-      plan: "Basic",
-      status: "expired",
-      joinDate: "2023-12-01",
-      lastVisit: "2024-11-10",
-      avatar:
-        "https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&dpr=2",
-      trainer: "Neha Gupta",
-      membershipExpiry: "2024-11-01",
-      checkins: 28,
-    },
-    {
-      id: 5,
-      name: "Lakshmi Iyer",
-      email: "lakshmi.i@email.com",
-      phone: "+91 90909 09090",
-      plan: "Premium",
-      status: "inactive",
-      joinDate: "2024-01-05",
-      lastVisit: "2024-10-15",
-      avatar:
-        "https://images.pexels.com/photos/31610834/pexels-photo-31610834.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&dpr=2",
-      trainer: "Vikram Singh",
-      membershipExpiry: "2024-12-05",
-      checkins: 18,
-    },
-  ];
+  console.log("🏋️ MembersManager: State initialized");
+  console.log("🏋️ MembersManager: isAddModalOpen =", isAddModalOpen);
+
+  // Fetch Members
+  const { data: members = [], isLoading } = useQuery({
+    queryKey: ['members'],
+    queryFn: async () => {
+      const res = await fetch('http://localhost:5000/api/members');
+      if (!res.ok) throw new Error('Network response was not ok');
+      return res.json();
+    }
+  });
+
+  const membersData = members;
+
+  // Track modal state changes
+  useEffect(() => {
+    console.log("🔄 MembersManager: isAddModalOpen changed to:", isAddModalOpen);
+  }, [isAddModalOpen]);
 
   const getStatusBadge = (status) => {
     const statusConfig = {
@@ -139,8 +87,8 @@ export default function MembersManager() {
     return (
       <div
         className={`inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium ${plan === "Premium"
-            ? "bg-gradient-to-r from-[#2563EB] to-[#10B981] text-white"
-            : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+          ? "bg-gradient-to-r from-[#2563EB] to-[#10B981] text-white"
+          : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
           }`}
       >
         {plan}
@@ -158,8 +106,14 @@ export default function MembersManager() {
   });
 
   const handleAddMember = () => {
-    // Add member functionality
-    console.log("Add member");
+    console.log("=== ADD MEMBER BUTTON CLICKED ===");
+    console.log("Setting isAddModalOpen to true");
+    setIsAddModalOpen(true);
+  };
+
+  const handleRecordPayment = (member) => {
+    setSelectedMember(member);
+    setIsPaymentModalOpen(true);
   };
 
   const handleEditMember = (member) => {
@@ -176,10 +130,15 @@ export default function MembersManager() {
     console.log("View member details:", member);
   };
 
+
   return (
-    <div className="p-4 md:p-6 lg:p-8 space-y-6">
+    <div className="p-4 md:p-6 lg:p-8 space-y-6 relative z-0">
+      <AddMemberModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+      />
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 relative z-10">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-[#2B2B2B] dark:text-white font-sora">
             Members
@@ -189,7 +148,7 @@ export default function MembersManager() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 relative z-50">
           <button
             onClick={() => console.log("Export members")}
             className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#1E1E1E] border border-[#E5E5E5] dark:border-[#333333] rounded-xl font-inter text-sm text-[#374151] dark:text-[#D1D5DB] hover:border-[#D0D0D0] dark:hover:border-[#444444] transition-colors duration-200"
@@ -246,8 +205,8 @@ export default function MembersManager() {
             <button
               onClick={() => setViewMode("grid")}
               className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-200 ${viewMode === "grid"
-                  ? "bg-white dark:bg-[#1E1E1E] text-[#2563EB] shadow-sm"
-                  : "text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#374151] dark:hover:text-[#D1D5DB]"
+                ? "bg-white dark:bg-[#1E1E1E] text-[#2563EB] shadow-sm"
+                : "text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#374151] dark:hover:text-[#D1D5DB]"
                 }`}
             >
               Grid
@@ -255,8 +214,8 @@ export default function MembersManager() {
             <button
               onClick={() => setViewMode("table")}
               className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-200 ${viewMode === "table"
-                  ? "bg-white dark:bg-[#1E1E1E] text-[#2563EB] shadow-sm"
-                  : "text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#374151] dark:hover:text-[#D1D5DB]"
+                ? "bg-white dark:bg-[#1E1E1E] text-[#2563EB] shadow-sm"
+                : "text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#374151] dark:hover:text-[#D1D5DB]"
                 }`}
             >
               Table
@@ -438,6 +397,13 @@ export default function MembersManager() {
                           className="p-1.5 text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#2563EB] dark:hover:text-[#60A5FA] transition-colors duration-200"
                         >
                           <Edit3 size={14} />
+                        </button>
+                        <button
+                          onClick={() => handleRecordPayment(member)}
+                          className="p-1.5 text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#10B981] transition-colors duration-200"
+                          title="Record Payment"
+                        >
+                          <CreditCard size={14} />
                         </button>
                         <button
                           onClick={() => handleDeleteMember(member.id)}

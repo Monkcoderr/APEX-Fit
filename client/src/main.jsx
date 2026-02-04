@@ -5,6 +5,8 @@ import App from './App.jsx'
 
 import Providers from './components/Providers.jsx'
 
+console.log("🚀 main.jsx: Starting app initialization...");
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Providers>
@@ -12,3 +14,5 @@ createRoot(document.getElementById('root')).render(
     </Providers>
   </StrictMode>,
 )
+
+console.log("✅ main.jsx: App rendered");

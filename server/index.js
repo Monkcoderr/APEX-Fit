@@ -13,10 +13,7 @@ app.use(express.json());
 app.use(cors());
 
 // Database Connection
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/fitflow_pro', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/fitflow_pro')
 .then(() => console.log('MongoDB Connected'))
 .catch(err => console.error('MongoDB Connection Error:', err));
 
@@ -24,8 +21,9 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/fitflow_pro
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/members', require('./routes/memberRoutes'));
 app.use('/api/plans', require('./routes/planRoutes'));
-app.use('/api/payments', require('./routes/paymentRoutes'));
+app.use('/api/payment', require('./routes/paymentRoutes'));
 app.use('/api/attendance', require('./routes/attendanceRoutes'));
+app.use('/api/dashboard', require('./routes/dashboardRoutes'));
 
 app.get('/', (req, res) => {
     res.send('FitFlow Pro API is running');

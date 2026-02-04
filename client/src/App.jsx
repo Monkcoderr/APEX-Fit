@@ -10,6 +10,7 @@ import CheckInPage from './pages/CheckInPage';
 import LoginPage from './pages/LoginPage';
 
 function App() {
+  console.log("📱 App.jsx: App component rendering");
   return (
     <Router>
       <Routes>

@@ -23,24 +23,19 @@ exports.getMembers = async (req, res) => {
 // Create member
 exports.createMember = async (req, res) => {
     try {
-        const { name, phone, plan, notes } = req.body;
-        // Basic validation
+        const { name, phone, notes } = req.body;
         if (!name || !phone) return res.status(400).json({ message: "Name and Phone required" });
 
         const existing = await Member.findOne({ phone });
         if (existing) return res.status(400).json({ message: "Member with this phone already exists" });
 
-        // Calculate initial expiry based on plan (mock logic for now if Plan model not queried)
-        // In real app, fetch plan duration. Defaulting to 30 days if not handled in Payment.
-        // Actually, creating a member might not set expiry until payment. 
-        // Let's set status to Active and expiry 30 days from now for MVP simplicity or 'Pending'
-        
+        // Initial status inactive until payment
         const newMember = new Member({
             name,
             phone,
             notes,
-            status: 'Active',
-            expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // Default 30 days trail/start
+            status: 'Inactive', 
+            // expiryDate not set or set to null until payment
         });
 
         await newMember.save();
@@ -50,7 +45,7 @@ exports.createMember = async (req, res) => {
     }
 };
 
-// Get single member
+// Get single member details
 exports.getMember = async (req, res) => {
     try {
         const member = await Member.findById(req.params.id);
@@ -58,5 +53,38 @@ exports.getMember = async (req, res) => {
         res.json(member);
     } catch (err) {
         res.status(500).json({ message: err.message });
+    }
+};
+
+// Update member
+exports.updateMember = async (req, res) => {
+    try {
+        const { name, phone, notes, status, expiryDate } = req.body;
+        const member = await Member.findById(req.params.id);
+        if (!member) return res.status(404).json({ message: "Member not found" });
+
+        member.name = name || member.name;
+        member.phone = phone || member.phone;
+        member.notes = notes || member.notes;
+        if (status) member.status = status;
+        if (expiryDate) member.expiryDate = expiryDate;
+
+        await member.save();
+        res.json(member);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+// Delete member
+exports.deleteMember = async (req, res) => {
+    try {
+        const member = await Member.findById(req.params.id);
+        if (!member) return res.status(404).json({ message: "Member not found" });
+        
+        await member.deleteOne();
+        res.json({ message: "Member removed" });
+    } catch (err) {
+         res.status(500).json({ message: err.message });
     }
 };
