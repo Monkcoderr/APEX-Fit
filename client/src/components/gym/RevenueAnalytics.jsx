@@ -57,7 +57,7 @@ export default function RevenueAnalytics() {
     }
 
     return (
-        <div className="bg-white dark:bg-[#1E1E1E] border border-[#E5E5E5] dark:border-[#333333] rounded-xl p-6 h-full flex flex-col">
+        <div className="bg-white dark:bg-[#1E1E1E] border border-[#E5E5E5] dark:border-[#333333] rounded-xl p-4 md:p-6 min-h-[350px] h-full flex flex-col">
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
                 <div>
@@ -93,9 +93,9 @@ export default function RevenueAnalytics() {
             </div>
 
             {/* Chart */}
-            <div className="h-[280px] w-full flex-1">
+            <div className="h-[280px] w-full flex-1 min-h-[250px]">
                 <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={analyticsData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <AreaChart data={analyticsData} margin={{ top: 10, right: 0, left: -25, bottom: 0 }}>
                         <defs>
                             <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="5%" stopColor="#2563EB" stopOpacity={0.3} />

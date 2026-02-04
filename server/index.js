@@ -15,6 +15,9 @@ const allowedOrigins = [
     "https://apex-fit-lac.vercel.app",
     "https://apex-hahqqedml-monkcoderrs-projects.vercel.app",
     "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5175",
+    "http://127.0.0.1:5175",
     "http://localhost:3000"
 ];
 
@@ -65,7 +68,7 @@ app.use('/api/attendance', require('./routes/attendanceRoutes'));
 app.use('/api/dashboard', require('./routes/dashboardRoutes'));
 
 app.get('/', (req, res) => {
-    res.send('FitFlow Pro API is running');
+    res.send('APEX Fit API is running');
 });
 
 app.listen(PORT, '0.0.0.0', () => {

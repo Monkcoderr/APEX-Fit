@@ -72,7 +72,7 @@ export default function GymHeader({ onMenuClick, onAddMember }) {
   };
 
   return (
-    <div className="h-16 bg-[#F3F3F3] dark:bg-[#1A1A1A] flex items-center justify-between px-4 md:px-6 flex-shrink-0 border-b border-[#E5E5E5] dark:border-[#333333]">
+    <div className="h-16 bg-[#F3F3F3] dark:bg-[#1A1A1A] flex items-center justify-between px-3 md:px-6 flex-shrink-0 border-b border-[#E5E5E5] dark:border-[#333333]">
       {/* Left side - Mobile menu button and Page title */}
       <div className="flex items-center gap-3">
         {/* Mobile menu button */}
