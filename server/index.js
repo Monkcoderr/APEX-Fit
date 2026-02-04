@@ -11,8 +11,23 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
+const allowedOrigins = [
+    "https://apex-fit-lac.vercel.app",
+    "https://apex-hahqqedml-monkcoderrs-projects.vercel.app",
+    "http://localhost:5173",
+    "http://localhost:3000"
+];
+
 app.use(cors({
-    origin: "https://apex-fit-lac.vercel.app", // Removed the "/" at the end
+    origin: function (origin, callback) {
+        // allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
 
