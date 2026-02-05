@@ -58,7 +58,14 @@ export default function GymSidebar({ onClose }) {
     <div className="w-60 bg-[#F3F3F3] dark:bg-[#1A1A1A] flex-shrink-0 flex flex-col h-full">
       {/* Brand Logo */}
       <div className="p-4 flex items-center gap-3">
-        <img src="/logo.png" alt="ApexFit Logo" className="h-10 w-auto object-contain" />
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-[#2563EB] to-[#10B981] rounded-xl flex items-center justify-center shadow-sm">
+            <Dumbbell size={22} className="text-white" />
+          </div>
+          <span className="text-xl font-bold font-plus-jakarta text-black dark:text-white tracking-tight">
+            APEX Fit
+          </span>
+        </div>
       </div>
 
       {/* Navigation Menu */}
